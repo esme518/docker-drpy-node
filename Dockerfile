@@ -2,14 +2,21 @@
 # Dockerfile for drpyS
 #
 
-FROM node:20-alpine AS builder
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+
+ENV LANG=C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 RUN set -ex \
   && apk add --update --no-cache \
+     build-base \
      git \
-     python3-dev \
-     py3-pip \
-     py3-wheel
+     nodejs-20 \
+     npm \
+     yarn \
+     python-3.10-dev \
+     py3.10-pip
 
 WORKDIR /app
 
@@ -24,13 +31,15 @@ RUN python3 -m venv .venv
 ENV PATH="/app/.venv/bin":$PATH
 RUN pip3 install -r spider/py/base/requirements.txt
 
-FROM node:20-alpine
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /app /app
+ENV LANG=C.UTF-8
+ENV PYTHONUNBUFFERED=1
 
 RUN set -ex \
   && apk add --update --no-cache \
-     python3 tini \
+     nodejs-20 python-3.10 tini \
   && rm -rf /tmp/* /var/cache/apk/*
 
 ENV PATH="/app/.venv/bin":$PATH
