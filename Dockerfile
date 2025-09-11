@@ -4,6 +4,10 @@
 
 FROM node:20-alpine AS builder
 
+ENV LANG=C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 RUN set -ex \
   && apk add --update --no-cache \
      git \
@@ -27,6 +31,8 @@ RUN pip3 install -r spider/py/base/requirements.txt
 FROM node:20-alpine
 
 COPY --from=builder /app /app
+ENV LANG=C.UTF-8
+ENV PYTHONUNBUFFERED=1
 
 RUN set -ex \
   && apk add --update --no-cache \
