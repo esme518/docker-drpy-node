@@ -2,7 +2,7 @@
 # Dockerfile for drpyS
 #
 
-FROM node:22-alpine AS builder
+FROM node:20-alpine AS builder
 
 RUN set -ex \
   && apk add --update --no-cache \
@@ -24,7 +24,7 @@ RUN python3 -m venv .venv
 ENV PATH="/app/.venv/bin":$PATH
 RUN pip3 install -r spider/py/base/requirements.txt
 
-FROM node:22-alpine
+FROM node:20-alpine
 
 COPY --from=builder /app /app
 
